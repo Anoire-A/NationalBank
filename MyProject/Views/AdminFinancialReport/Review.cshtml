@@ -1,0 +1,116 @@
+@model Project.ViewModels.FinancialReportReviewViewModel
+
+@{
+    ViewData["Title"] = "Review Financial Report";
+}
+
+<h1>Review Financial Report</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Report Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Bank</dt>
+                    <dd class="col-sm-8">@Model.BankName</dd>
+
+                    <dt class="col-sm-4">Report Date</dt>
+                    <dd class="col-sm-8">@Model.ReportDate.ToString("yyyy-MM-dd")</dd>
+
+                    <dt class="col-sm-4">Current Status</dt>
+                    <dd class="col-sm-8">
+                        @switch (Model.Status)
+                        {
+                            case Project.Models.ReportStatus.Pending:
+                                <span class="badge bg-warning text-dark">Pending</span>
+                                break;
+                            case Project.Models.ReportStatus.Approved:
+                                <span class="badge bg-success">Approved</span>
+                                break;
+                            case Project.Models.ReportStatus.Rejected:
+                                <span class="badge bg-danger">Rejected</span>
+                                break;
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Regulatory Decision</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" id="reviewForm">
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="mb-3">
+                        <label asp-for="ReviewNotes" class="form-label">Review Notes</label>
+                        <textarea asp-for="ReviewNotes" class="form-control" rows="4" placeholder="Enter any notes or comments about this report..."></textarea>
+                        <span asp-validation-for="ReviewNotes" class="text-danger"></span>
+                        <small class="form-text text-muted">Notes are required when rejecting a report.</small>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Important:</strong> Once you approve or reject this report, the decision will be final and visible to the bank.
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-success" onclick="submitReview('Approve')">
+                            <i class="fas fa-check-circle me-1"></i> Approve Report
+                        </button>
+
+                        <button type="button" class="btn btn-danger" onclick="submitReview('Reject')">
+                            <i class="fas fa-times-circle me-1"></i> Reject Report
+                        </button>
+
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+
+                <form id="approveForm" asp-action="Approve" method="post" style="display:none;">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="reviewNotes" id="approveNotes" />
+                </form>
+
+                <form id="rejectForm" asp-action="Reject" method="post" style="display:none;">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="reviewNotes" id="rejectNotes" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function submitReview(action) {
+            var notes = document.getElementById('ReviewNotes').value;
+            
+            if (action === 'Reject' && !notes.trim()) {
+                alert('Review notes are required when rejecting a report.');
+                return;
+            }
+            
+            if (action === 'Reject' && !confirm('Are you sure you want to reject this report?')) {
+                return;
+            }
+            
+            if (action === 'Approve') {
+                document.getElementById('approveNotes').value = notes;
+                document.getElementById('approveForm').submit();
+            } else {
+                document.getElementById('rejectNotes').value = notes;
+                document.getElementById('rejectForm').submit();
+            }
+        }
+    </script>
+}
+

@@ -1,0 +1,90 @@
+@model Project.Models.FinancialReport
+
+@{
+    ViewData["Title"] = "Report Details";
+}
+
+<h1>Financial Report Details</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Financial Report Details - @Model.ReportDate.ToString("yyyy-MM-dd")</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-6">Total Assets:</dt>
+                    <dd class="col-sm-6">@Model.TotalAssets.ToString("C")</dd>
+
+                    <dt class="col-sm-6">Total Liabilities:</dt>
+                    <dd class="col-sm-6">@Model.TotalLiabilities.ToString("C")</dd>
+
+                    <dt class="col-sm-6">Capital Adequacy Ratio (CAR):</dt>
+                    <dd class="col-sm-6">@Model.CapitalAdequacyRatio.ToString("F1")%</dd>
+
+                    <dt class="col-sm-6">Net Profit:</dt>
+                    <dd class="col-sm-6">@Model.NetProfit.ToString("C")</dd>
+
+                    <dt class="col-sm-6">Non-Performing Loans (NPL):</dt>
+                    <dd class="col-sm-6">@Model.NonPerformingLoans.ToString("F1")%</dd>
+                </dl>
+            </div>
+        </div>
+
+        <dl class="row">
+
+            <dt class="col-sm-4">Validation Status</dt>
+            <dd class="col-sm-8">
+                @if (Model.IsValid)
+                {
+                    <span class="badge bg-success">Valid</span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark">Invalid</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4">Regulatory Status</dt>
+            <dd class="col-sm-8">
+                @switch (Model.Status)
+                {
+                    case Project.Models.ReportStatus.Pending:
+                        <span class="badge bg-warning text-dark">Pending Review</span>
+                        break;
+                    case Project.Models.ReportStatus.Approved:
+                        <span class="badge bg-success">Approved</span>
+                        break;
+                    case Project.Models.ReportStatus.Rejected:
+                        <span class="badge bg-danger">Rejected</span>
+                        break;
+                }
+            </dd>
+
+            <dt class="col-sm-4">Submitted At</dt>
+            <dd class="col-sm-8">@Model.SubmittedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+
+            @if (Model.ReviewedAt.HasValue)
+            {
+                <dt class="col-sm-4">Reviewed At</dt>
+                <dd class="col-sm-8">@Model.ReviewedAt.Value.ToString("yyyy-MM-dd HH:mm")</dd>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.ReviewNotes))
+            {
+                <dt class="col-sm-4">Review Notes</dt>
+                <dd class="col-sm-8">
+                    <div class="alert alert-info mb-0">
+                        @Model.ReviewNotes
+                    </div>
+                </dd>
+            }
+        </dl>
+
+        <div class="mt-4">
+            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+        </div>
+    </div>
+</div>
+

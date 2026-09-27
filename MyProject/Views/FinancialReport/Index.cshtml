@@ -1,0 +1,107 @@
+@model IEnumerable<Project.Models.FinancialReport>
+
+@{
+    ViewData["Title"] = "My Financial Reports";
+}
+
+<h1>My Financial Reports</h1>
+<p class="text-muted">View and manage your submitted financial reports.</p>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus-circle me-1"></i> Submit New Report
+    </a>
+    <a asp-action="ExportPdf" class="btn btn-outline-secondary ms-2">
+        <i class="fas fa-file-pdf me-1"></i> Export to PDF
+    </a>
+    <a asp-action="ExportCsv" class="btn btn-outline-success ms-2">
+        <i class="fas fa-file-excel me-1"></i> Export to Excel
+    </a>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-file-invoice fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No Financial Reports</h4>
+            <p class="text-muted">You haven't submitted any financial reports yet.</p>
+            <a asp-action="Create" class="btn btn-primary mt-3">
+                <i class="fas fa-plus-circle me-1"></i> Submit Your First Report
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.ReportDate)</th>
+                <th>@Html.DisplayNameFor(model => model.TotalAssets)</th>
+                <th>@Html.DisplayNameFor(model => model.TotalLiabilities)</th>
+                <th>@Html.DisplayNameFor(model => model.CapitalAdequacyRatio)</th>
+                <th>Validation</th>
+                <th>Status</th>
+                <th>@Html.DisplayNameFor(model => model.SubmittedAt)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ReportDate.ToString("yyyy-MM-dd")</td>
+                    <td>@item.TotalAssets.ToString("C")</td>
+                    <td>@item.TotalLiabilities.ToString("C")</td>
+                    <td>@item.CapitalAdequacyRatio.ToString("F2")%</td>
+                    <td>
+                        @if (item.IsValid)
+                        {
+                            <span class="badge bg-success">Valid</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Invalid</span>
+                        }
+                    </td>
+                    <td>
+                        @switch (item.Status)
+                        {
+                            case Project.Models.ReportStatus.Pending:
+                                <span class="badge bg-warning text-dark">Pending Review</span>
+                                break;
+                            case Project.Models.ReportStatus.Approved:
+                                <span class="badge bg-success">Approved</span>
+                                break;
+                            case Project.Models.ReportStatus.Rejected:
+                                <span class="badge bg-danger">Rejected</span>
+                                break;
+                        }
+                    </td>
+                    <td>@item.SubmittedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">View</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

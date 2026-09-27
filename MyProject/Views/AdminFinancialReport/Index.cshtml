@@ -1,0 +1,132 @@
+@model IEnumerable<Project.Models.FinancialReport>
+
+@{
+    ViewData["Title"] = "All Financial Reports";
+}
+
+<h1>Financial Reports - Regulatory Dashboard</h1>
+<p class="text-muted">Review and manage all submitted financial reports from commercial banks.</p>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="mb-3">
+    <form method="get" class="d-inline">
+        <label for="statusFilter" class="form-label me-2">Filter by Status:</label>
+        <select name="statusFilter" id="statusFilter" class="form-select d-inline-block" style="width: auto;" onchange="this.form.submit()">
+            @foreach (var option in ViewBag.StatusOptions as string[])
+            {
+                <option value="@option" selected="@(ViewBag.StatusFilter == option)">@option</option>
+            }
+        </select>
+    </form>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No Financial Reports Found</h4>
+            <p class="text-muted">
+                @if (ViewBag.StatusFilter != null && ViewBag.StatusFilter.ToString() != "All")
+                {
+                    <text>No financial reports found with status: <strong>@ViewBag.StatusFilter</strong></text>
+                }
+                else
+                {
+                    <text>No financial reports have been submitted yet by any commercial banks.</text>
+                }
+            </p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Bank</th>
+                    <th>Report Date</th>
+                    <th>Total Assets</th>
+                    <th>Total Liabilities</th>
+                    <th>CAR</th>
+                    <th>Validation</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var isRedFlag = item.CapitalAdequacyRatio < 8;
+                    <tr class="@(isRedFlag ? "table-danger" : string.Empty)">
+                        <td>
+                            <strong>@item.Bank?.Name</strong><br />
+                            <small class="text-muted">@item.Bank?.RegistrationNumber</small>
+                        </td>
+                        <td>@item.ReportDate.ToString("yyyy-MM-dd")</td>
+                        <td>@item.TotalAssets.ToString("C")</td>
+                        <td>@item.TotalLiabilities.ToString("C")</td>
+                        <td>
+                            @item.CapitalAdequacyRatio.ToString("F2")%
+                            @if (isRedFlag)
+                            {
+                                <span class="badge bg-danger ms-1">Red Flag</span>
+                                <div class="text-danger small">Below 8% threshold</div>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsValid)
+                            {
+                                <span class="badge bg-success">Valid</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Invalid</span>
+                            }
+                        </td>
+                        <td>
+                            @switch (item.Status)
+                            {
+                                case Project.Models.ReportStatus.Pending:
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    break;
+                                case Project.Models.ReportStatus.Approved:
+                                    <span class="badge bg-success">Approved</span>
+                                    break;
+                                case Project.Models.ReportStatus.Rejected:
+                                    <span class="badge bg-danger">Rejected</span>
+                                    break;
+                            }
+                        </td>
+                        <td>@item.SubmittedAt.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">View</a>
+                            @if (item.Status == Project.Models.ReportStatus.Pending)
+                            {
+                                <a asp-action="Review" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Review</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+

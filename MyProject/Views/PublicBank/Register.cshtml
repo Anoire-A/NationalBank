@@ -1,0 +1,81 @@
+﻿@model Project.ViewModels.PublicBankRegisterViewModel
+
+@{
+    ViewData["Title"] = "Request Bank Registration";
+    Layout = "_Layout"; 
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="display-6 text-primary mb-3">
+            <i class="fas fa-handshake me-2"></i> Commercial Bank Registration Request
+        </h1>
+        <p class="lead text-muted">
+            Submit your bank details and proposed primary user credentials. Your application will be reviewed by the National Bank.
+        </p>
+        <hr />
+
+        <form asp-action="Register" class="card shadow-sm p-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <h5 class="text-secondary border-bottom pb-2 mb-3">Bank Registration Details</h5>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="E.g., First National Capital Bank" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="RegistrationNumber" class="form-label"></label>
+                <input asp-for="RegistrationNumber" class="form-control" placeholder="E.g., FNCB-2025-45A" />
+                <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Address" class="form-label"></label>
+                <input asp-for="Address" class="form-control" placeholder="E.g., 123 Commerce Way, Financial District" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <h5 class="text-secondary border-bottom pb-2 my-4">Proposed Primary User Credentials</h5>
+
+            <p class="text-muted small">These credentials will be activated only upon approval from the National Bank.</p>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="Primary contact email for reporting" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" type="password" autocomplete="new-password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" type="password" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="fas fa-paper-plane me-1"></i> Submit Registration Request
+                </button>
+            </div>
+            <div class="mt-2 text-center">
+                <a asp-controller="Home" asp-action="Index" class="text-muted">Return to Home</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

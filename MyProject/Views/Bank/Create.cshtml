@@ -1,0 +1,73 @@
+﻿@model Project.ViewModels.BankCreateViewModel
+
+@{
+    ViewData["Title"] = "Register New Commercial Bank";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="display-6 text-primary mb-3">
+            <i class="fas fa-plus-circle me-2"></i> Register New Commercial Bank
+        </h1>
+        <p class="lead text-muted">Enter the bank details and provision the primary user account. The bank will be automatically set to Approved.</p>
+        <hr />
+
+        <form asp-action="Create" class="card shadow-sm p-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <h5 class="text-secondary border-bottom pb-2 mb-3">Bank Registration Details</h5>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="E.g., First National Capital Bank" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="RegistrationNumber" class="form-label"></label>
+                <input asp-for="RegistrationNumber" class="form-control" placeholder="E.g., FNCB-2025-45A" />
+                <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Address" class="form-label"></label>
+                <input asp-for="Address" class="form-control" placeholder="E.g., 123 Commerce Way, Financial District" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <h5 class="text-secondary border-bottom pb-2 my-4">User Provisioning (Commercial Bank Access)</h5>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="E.g., reporting@firstnationalbank.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" type="password" autocomplete="new-password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" type="password" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-check-circle me-1"></i> Register Bank & Provision User
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary align-self-center">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

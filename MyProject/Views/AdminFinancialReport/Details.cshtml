@@ -1,0 +1,105 @@
+@model Project.Models.FinancialReport
+
+@{
+    ViewData["Title"] = "Report Details";
+}
+
+<h1>Financial Report Details</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">@Model.Bank?.Name - @Model.ReportDate.ToString("yyyy-MM-dd")</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Bank Name</dt>
+                    <dd class="col-sm-8">@Model.Bank?.Name</dd>
+
+                    <dt class="col-sm-4">Registration Number</dt>
+                    <dd class="col-sm-8">@Model.Bank?.RegistrationNumber</dd>
+
+                    <dt class="col-sm-4">Report Date</dt>
+                    <dd class="col-sm-8">@Model.ReportDate.ToString("yyyy-MM-dd")</dd>
+
+                    <dt class="col-sm-4">Total Assets:</dt>
+                    <dd class="col-sm-8">@Model.TotalAssets.ToString("C")</dd>
+
+                    <dt class="col-sm-4">Total Liabilities:</dt>
+                    <dd class="col-sm-8">@Model.TotalLiabilities.ToString("C")</dd>
+
+                    <dt class="col-sm-4">Capital Adequacy Ratio (CAR):</dt>
+                    <dd class="col-sm-8">@Model.CapitalAdequacyRatio.ToString("F1")%</dd>
+
+                    <dt class="col-sm-4">Net Profit:</dt>
+                    <dd class="col-sm-8">@Model.NetProfit.ToString("C")</dd>
+
+                    <dt class="col-sm-4">Non-Performing Loans (NPL):</dt>
+                    <dd class="col-sm-8">@Model.NonPerformingLoans.ToString("F1")%</dd>
+
+                    <dt class="col-sm-4">Validation Status</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.IsValid)
+                        {
+                            <span class="badge bg-success">Valid</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Invalid</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Regulatory Status</dt>
+                    <dd class="col-sm-8">
+                        @switch (Model.Status)
+                        {
+                            case Project.Models.ReportStatus.Pending:
+                                <span class="badge bg-warning text-dark">Pending Review</span>
+                                break;
+                            case Project.Models.ReportStatus.Approved:
+                                <span class="badge bg-success">Approved</span>
+                                break;
+                            case Project.Models.ReportStatus.Rejected:
+                                <span class="badge bg-danger">Rejected</span>
+                                break;
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Submitted At</dt>
+                    <dd class="col-sm-8">@Model.SubmittedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+
+                    @if (Model.SubmittedByUser != null)
+                    {
+                        <dt class="col-sm-4">Submitted By</dt>
+                        <dd class="col-sm-8">@Model.SubmittedByUser.Email</dd>
+                    }
+
+                    @if (Model.ReviewedAt.HasValue)
+                    {
+                        <dt class="col-sm-4">Reviewed At</dt>
+                        <dd class="col-sm-8">@Model.ReviewedAt.Value.ToString("yyyy-MM-dd HH:mm")</dd>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.ReviewNotes))
+                    {
+                        <dt class="col-sm-4">Review Notes</dt>
+                        <dd class="col-sm-8">
+                            <div class="alert alert-info mb-0">
+                                @Model.ReviewNotes
+                            </div>
+                        </dd>
+                    }
+                </dl>
+            </div>
+            <div class="card-footer">
+                @if (Model.Status == Project.Models.ReportStatus.Pending)
+                {
+                    <a asp-action="Review" asp-route-id="@Model.Id" class="btn btn-primary">Review & Approve/Reject</a>
+                }
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+

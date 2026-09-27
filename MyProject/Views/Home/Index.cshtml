@@ -1,0 +1,106 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-4 text-primary">
+        <i class="fas fa-university"></i> National Bank Reporting System
+    </h1>
+    <p class="lead text-muted">Centralized financial reporting and regulatory oversight platform</p>
+</div>
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.GetUserAsync(User);
+    var isAdmin = User.IsInRole("NationalBankAdmin");
+    var isBankUser = User.IsInRole("CommercialBankUser");
+
+    <div class="row">
+        @if (isAdmin)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-building text-primary"></i> Bank Management
+                        </h5>
+                        <p class="card-text">Manage commercial bank registrations, approvals, and oversight.</p>
+                        <a asp-controller="Bank" asp-action="Index" class="btn btn-primary">
+                            <i class="fas fa-arrow-right me-1"></i> Manage Banks
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-chart-line text-success"></i> Financial Reports
+                        </h5>
+                        <p class="card-text">Review and approve financial reports submitted by commercial banks.</p>
+                        <a asp-controller="AdminFinancialReport" asp-action="Index" class="btn btn-success">
+                            <i class="fas fa-arrow-right me-1"></i> View Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (isBankUser)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-file-invoice text-info"></i> My Reports
+                        </h5>
+                        <p class="card-text">View all your submitted financial reports and their status.</p>
+                        <a asp-controller="FinancialReport" asp-action="Index" class="btn btn-info">
+                            <i class="fas fa-arrow-right me-1"></i> View My Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-plus-circle text-primary"></i> Submit New Report
+                        </h5>
+                        <p class="card-text">Submit a new monthly financial report for regulatory review.</p>
+                        <a asp-controller="FinancialReport" asp-action="Create" class="btn btn-primary">
+                            <i class="fas fa-arrow-right me-1"></i> Submit Report
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Welcome to the National Bank Reporting System</h5>
+                    <p class="card-text">
+                        This platform enables commercial banks to submit financial reports and allows 
+                        the National Bank to monitor and oversee financial compliance.
+                    </p>
+                    <div class="mt-4">
+                        <a asp-controller="PublicBank" asp-action="Register" class="btn btn-primary btn-lg me-2">
+                            <i class="fas fa-handshake me-1"></i> Request Bank Registration
+                        </a>
+                        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-1"></i> Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

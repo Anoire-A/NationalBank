@@ -1,0 +1,75 @@
+@model Project.Models.Bank
+
+@{
+    ViewData["Title"] = "Bank Details";
+}
+
+<h1>Bank Details</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RegistrationNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RegistrationNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-2">
+            Approval Status
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.IsApproved)
+            {
+                <span class="badge bg-success">Approved</span>
+            }
+            else
+            {
+                <span class="badge bg-warning text-dark">Pending</span>
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dd>
+        @if (Model.AssociatedUser != null)
+        {
+            <dt class="col-sm-2">
+                Associated User
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.AssociatedUser.Email)
+                <span class="text-muted">(@Html.DisplayFor(model => model.AssociatedUser.FullName))</span>
+            </dd>
+        }
+        else if (!string.IsNullOrEmpty(Model.PendingUserEmail))
+        {
+            <dt class="col-sm-2">
+                Pending User Email
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.PendingUserEmail)
+                <span class="text-muted">(Awaiting approval)</span>
+            </dd>
+        }
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+</div>
+

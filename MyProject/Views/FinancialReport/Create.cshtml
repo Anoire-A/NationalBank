@@ -1,0 +1,92 @@
+@model Project.ViewModels.FinancialReportCreateViewModel
+
+@{
+    ViewData["Title"] = "Submit Financial Report";
+}
+
+<h1>Submit Financial Report</h1>
+<p class="text-muted">Submit your monthly financial data for regulatory review.</p>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" class="card shadow-sm p-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="ReportDate" class="form-label"></label>
+                <input asp-for="ReportDate" class="form-control" type="date" />
+                <span asp-validation-for="ReportDate" class="text-danger"></span>
+                <small class="form-text text-muted">Select the reporting period date (typically month-end).</small>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="TotalAssets" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input asp-for="TotalAssets" class="form-control" type="number" step="0.01" min="0" />
+                </div>
+                <span asp-validation-for="TotalAssets" class="text-danger"></span>
+                <small class="form-text text-muted">Total value of all assets.</small>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="TotalLiabilities" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input asp-for="TotalLiabilities" class="form-control" type="number" step="0.01" min="0" />
+                </div>
+                <span asp-validation-for="TotalLiabilities" class="text-danger"></span>
+                <small class="form-text text-muted">Total value of all liabilities.</small>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CapitalAdequacyRatio" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="CapitalAdequacyRatio" class="form-control" type="number" step="0.01" min="0" max="100" />
+                    <span class="input-group-text">%</span>
+                </div>
+                <span asp-validation-for="CapitalAdequacyRatio" class="text-danger"></span>
+                <small class="form-text text-muted">Capital Adequacy Ratio (CAR): ((Assets - Liabilities) / Assets) × 100</small>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="NetProfit" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input asp-for="NetProfit" class="form-control" type="number" step="0.01" />
+                </div>
+                <span asp-validation-for="NetProfit" class="text-danger"></span>
+                <small class="form-text text-muted">Net profit for the reporting period.</small>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="NonPerformingLoans" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="NonPerformingLoans" class="form-control" type="number" step="0.01" min="0" max="100" />
+                    <span class="input-group-text">%</span>
+                </div>
+                <span asp-validation-for="NonPerformingLoans" class="text-danger"></span>
+                <small class="form-text text-muted">Non-Performing Loans as a percentage of total loans.</small>
+            </div>
+
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Note:</strong> After submission, your report will be reviewed by the National Bank. You will be notified of the approval status.
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-paper-plane me-1"></i> Submit Report
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
